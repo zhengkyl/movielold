@@ -1,13 +1,14 @@
-import Review from "../models/Review.mjs";
+import { RequestHandler } from "express";
+import Review from "../models/Review";
 
-export const createReview = async (req, res) => {
+export const createReview: RequestHandler = async (req, res) => {
   const { tmdbId, formSchema, formValues } = req.body;
 
   const newReview = new Review({
     tmdbId,
     formSchema,
     formValues,
-    user: req.user.id,
+    user: req.body.user.id,
   });
   try {
     await newReview.save();
@@ -18,7 +19,7 @@ export const createReview = async (req, res) => {
   }
 };
 
-export const updateReview = async (req, res) => {
+export const updateReview: RequestHandler = async (req, res) => {
   const { formSchema, formValues } = req.body;
 
   try {
@@ -27,7 +28,7 @@ export const updateReview = async (req, res) => {
       return res.status(404).json({ message: "Review not found" });
     }
 
-    if (review.user.toString() !== req.user.id) {
+    if (review.user.toString() !== req.body.user.id) {
       return res.status(401).json({ message: "Not authorized" });
     }
 
@@ -49,14 +50,14 @@ export const updateReview = async (req, res) => {
   }
 };
 
-export const deleteReview = async (req, res) => {
+export const deleteReview: RequestHandler = async (req, res) => {
   try {
     const review = await Review.findById(req.params.id);
     if (!review) {
       return res.status(404).json({ message: "Review not found" });
     }
 
-    if (review.user.toString() !== req.user.id) {
+    if (review.user.toString() !== req.body.user.id) {
       return res.status(401).json({ message: "Not authorized" });
     }
 
@@ -68,9 +69,9 @@ export const deleteReview = async (req, res) => {
   }
 };
 
-export const getReviews = async (req, res) => {
+export const getReviews: RequestHandler = async (req, res) => {
   try {
-    const reviews = await Review.find({ user: req.user.id });
+    const reviews = await Review.find({ user: req.body.user.id });
     res.status(200).json({ reviews });
   } catch (err) {
     console.log(err.message);

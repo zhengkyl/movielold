@@ -1,7 +1,7 @@
-import User from "../models/User.mjs";
-
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import User from "../models/User";
+import { RequestHandler } from "express";
 
 const respondSignedToken = (res, userId) =>
   jwt.sign(
@@ -16,7 +16,7 @@ const respondSignedToken = (res, userId) =>
     }
   );
 
-export const login = async (req, res) => {
+export const login: RequestHandler = async (req, res) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
@@ -35,11 +35,11 @@ export const login = async (req, res) => {
     respondSignedToken(res, user._id);
   } catch (err) {
     console.log(err.message);
-    return res.status(500).json({ message: "Unknown server error" });
+    res.status(500).json({ message: "Unknown server error" });
   }
 };
 
-export const register = async (req, res) => {
+export const register: RequestHandler = async (req, res) => {
   const { name, email, password } = req.body;
   try {
     const user = await User.findOne({ email });
@@ -61,13 +61,13 @@ export const register = async (req, res) => {
     respondSignedToken(res, newUser._id);
   } catch (err) {
     console.log(err.message);
-    return res.status(500).json({ message: "Unknown server error" });
+    res.status(500).json({ message: "Unknown server error" });
   }
 };
 
-export const getUser = async (req, res) => {
+export const getUser: RequestHandler = async (req, res) => {
   try {
-    const rawUser = await User.findById(req.user.id);
+    const rawUser = await User.findById(req.body.user.id);
     if (!rawUser) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -80,6 +80,6 @@ export const getUser = async (req, res) => {
     res.status(200).json({ user });
   } catch (err) {
     console.log(err.message);
-    return res.status(500).json({ message: "Unknown server error" });
+    res.status(500).json({ message: "Unknown server error" });
   }
 };

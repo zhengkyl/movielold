@@ -1,8 +1,8 @@
 import express from "express";
-const router = express.Router();
+import { login, register, getUser } from "../controllers/auth";
+import isAuth from "../middleware/isAuth";
 
-import { login, register, getUser } from "../controllers/auth.mjs";
-import isAuth from "../middleware/isAuth.mjs";
+const router = express.Router();
 
 router.post("/login", login);
 router.post("/register", register);
