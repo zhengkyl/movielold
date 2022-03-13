@@ -1,9 +1,5 @@
-if (process.env.NODE_ENV === "DEVELOPMENT") {
-  import("dotenv/config");
-}
 
-const { MONGODB_URI, PORT, TMDB_API_KEY } = process.env;
-
+const { MONGODB_URI, PORT, TMDB_API_URL, TMDB_API_KEY } = process.env;
 const config = {
     app: {
         port: PORT,
@@ -12,6 +8,7 @@ const config = {
         uri: MONGODB_URI,
     },
     tmdb: {
+        apiUrl: TMDB_API_URL,
         apiKey: TMDB_API_KEY,
     }
 }
