@@ -5,11 +5,16 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { useState } from "react";
-import { MovieResult, useSearchMovies } from "../hooks/useSearchMovies";
+import { FormEvent, useState } from "react";
+import MovieSearchField from "../components/MovieSearchField";
+import {
+  MovieResult,
+  useAutocompleteMovies,
+} from "../hooks/useAutocompleteMovies";
 
 const MovieItem = (props: MovieResult) => {
-  const image = (posterPath) => `https://image.tmdb.org/t/p/w500${posterPath}`;
+  const image = (posterPath: string) =>
+    `https://image.tmdb.org/t/p/w500${posterPath}`;
 
   return (
     <Card sx={{ display: "flex" }}>
@@ -33,40 +38,22 @@ const MovieItem = (props: MovieResult) => {
 
 const SearchPage = () => {
   const [movies, setMovies] = useState<MovieResult[]>([]);
-  const { searchText, setSearchText, search } = useSearchMovies();
+  const [query, setQuery] = useState("")
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (search.result?.query === searchText) {
-      setMovies(search.result.results);
-    return;
-    }
-    forceSearch() 
+  const handleSelect = (value: string) => {
+    setQuery(value);
+    // if (search.result?.query === searchText) {
+    //   setMovies(search.result.results);
+    //   return;
+    // }
   };
-  const forceSearch = async () => {
-    await search.execute()
-    setMovies(search.result.results)
-  }
 
   return (
     <Box>
-      <form onSubmit={handleSubmit}>
-        <Autocomplete
-          freeSolo
-          autoHighlight
-          options={search.result?.results ?? []}
-          loading={search.loading}
-          inputValue={searchText}
-          onInputChange={(_, newInputValue) => setSearchText(newInputValue)}
-          onSubmit={() => console.log("sbmit")}
-          renderInput={(params) => (
-            <TextField {...params} label="Search for movies..." />
-          )}
-        ></Autocomplete>
-        {movies.map((movie) => (
-          <MovieItem {...movie} key={movie.id} />
-        ))}
-      </form>
+        <MovieSearchField onSelect={handleSelect}/>
+      {movies.map((movie) => (
+        <MovieItem {...movie} key={movie.id} />
+      ))}
     </Box>
   );
 };

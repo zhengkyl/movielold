@@ -13,12 +13,20 @@ export interface MovieResult {
   posterPath: string;
   id: string;
   overview: string;
+  year: string;
 }
 
-const searchMovies = async (query, abortSignal, { limit = 5 }): Promise<Search> => {
-  const response = await fetch(`/api/search?query=${query}&limit=${limit}`, {
-    signal: abortSignal,
-  });
+const searchMovies = async (
+  query: string,
+  abortSignal: AbortSignal,
+  { limit = 5 }
+): Promise<Search> => {
+  const response = await fetch(
+    `http://localhost:5000/api/search?query=${query}&limit=${limit}`,
+    {
+      signal: abortSignal,
+    }
+  );
   if (!response.ok) throw new Error("Failed searchMovies");
 
   const json = await response.json();
@@ -28,7 +36,7 @@ const searchMovies = async (query, abortSignal, { limit = 5 }): Promise<Search> 
   };
 };
 
-export const useSearchMovies = () => {
+export const useAutocompleteMovies = () => {
   const [searchText, setSearchText] = useState("");
 
   const debouncedSearchMovies = useConstant(() =>
@@ -37,9 +45,11 @@ export const useSearchMovies = () => {
   const search = useAsyncAbortable<Search>(
     async (abortSignal, text) => {
       if (text.length === 0) return { query: "", results: [] };
+
       return debouncedSearchMovies(text, abortSignal, { limit: 10 });
     },
-    [searchText]
+    [searchText],
+    { setLoading: (state) => ({ ...state, loading: true }) }, // keep old data while fetching
   );
 
   return {
