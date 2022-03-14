@@ -28,6 +28,7 @@
     "gatsby-plugin-sharp": "^4.4.0",
     "gatsby-plugin-sitemap": "^5.4.0",
     "gatsby-source-filesystem": "^4.4.0",
+    "gatsby-theme-material-ui": "^5.1.0",
     "gatsby-transformer-sharp": "^4.4.0",
     "immer": "^9.0.12",
     "node-fetch": "^3.2.0",

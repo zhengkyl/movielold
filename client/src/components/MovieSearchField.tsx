@@ -4,9 +4,9 @@ import TextField from "@mui/material/TextField";
 import { grey } from "@mui/material/colors";
 import { jsx } from "@emotion/react";
 import {
-  MovieResult,
   useAutocompleteMovies,
 } from "../hooks/useAutocompleteMovies";
+import { MovieResult } from "../services/MovieService";
 
 interface MovieSearchFieldProps {
   onSelect: (value: string) => void;
@@ -14,13 +14,13 @@ interface MovieSearchFieldProps {
 
 const MovieSearchField = (props: MovieSearchFieldProps) => {
   const { searchText, setSearchText, search } = useAutocompleteMovies();
-  const { onSelect, ...otherProps } = { ...props };
+  const { onSelect, ...otherProps } = props;
 
   return (
     <Autocomplete
       {...otherProps}
       freeSolo
-      options={search.result?.results || []}
+      options={search.result || []}
       // disable filter b/c already filtered
       filterOptions={(x) => x}
       // autocompleted MovieResult vs non autocompleted string

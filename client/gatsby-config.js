@@ -4,6 +4,7 @@ module.exports = {
     title: "movielo",
   },
   plugins: [
+    "gatsby-theme-material-ui",
     "gatsby-plugin-emotion",
     "gatsby-plugin-image",
     "gatsby-plugin-react-helmet",

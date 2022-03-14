@@ -1,35 +1,86 @@
-import Autocomplete from "@mui/material/Autocomplete";
+import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { FormEvent, useState } from "react";
+import { useState } from "react";
+import { useAsync } from "react-async-hook";
 import MovieSearchField from "../components/MovieSearchField";
-import {
-  MovieResult,
-  useAutocompleteMovies,
-} from "../hooks/useAutocompleteMovies";
+import MovieService, { MovieResult } from "../services/MovieService";
+import { css } from "@emotion/react";
 
-const MovieItem = (props: MovieResult) => {
-  const image = (posterPath: string) =>
-    `https://image.tmdb.org/t/p/w500${posterPath}`;
+/** Parent must have overflow: hidden */
+const oneLineEllipsis = css`
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+`;
 
+/** Parent must have overflow: hidden
+ *
+ * This is the least hacky way for multiline ellipsis text
+ */
+const multiLineEllipsis = (lines: number) => css`
+  text-overflow: ellipsis;
+  overflow: hidden;
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: ${lines};
+`;
+const image = (posterPath: string) =>
+  `https://image.tmdb.org/t/p/w500${posterPath}`;
+
+interface MovieItemProps {
+  movie: MovieResult;
+  truncateTitle?: boolean;
+  descriptionLines?: number;
+}
+const MovieItem = ({movie, truncateTitle=true, descriptionLines=2, ...otherProps}: MovieItemProps) => {
   return (
-    <Card sx={{ display: "flex" }}>
+    <Card
+      sx={{
+        display: "flex",
+        my: 2,
+      }}
+      component="li"
+      variant="outlined"
+      {...otherProps}
+    >
       <CardMedia
         component="img"
-        sx={{ width: 151 }}
-        image={image(props.posterPath)}
-        alt={`${props.title} poster`}
+        sx={{
+          height: 150,
+          width: 100,
+          m: 1,
+          mr: 0,
+          borderRadius: 1,
+          border: "1px solid rgba(0, 0, 0, 0.12)",
+          flexShrink: 0,
+        }}
+        image={image(movie.posterPath)}
+        alt={`${movie.title} poster`}
       />
-      <CardContent sx={{ flex: "1 0 auto" }}>
-        <Typography component="div" variant="h5">
-          {props.title}
+      <CardContent sx={{ overflow: "hidden" }}>
+        <Typography
+          css={truncateTitle && oneLineEllipsis}
+          component="h2"
+          variant="h6"
+          fontWeight={700}
+        >
+          {movie.title}
         </Typography>
-        <Typography variant="subtitle1" color="text.secondary" component="div">
-          {props.overview}
+        <Typography component="span" variant="subtitle1" color="text.secondary">
+          {movie.year}
+        </Typography>
+        <Typography
+          css={multiLineEllipsis(descriptionLines)}
+          sx={{ mt: 1 }}
+          component="p"
+          variant="body1"
+        >
+          {movie.overview}
         </Typography>
       </CardContent>
     </Card>
@@ -37,23 +88,28 @@ const MovieItem = (props: MovieResult) => {
 };
 
 const SearchPage = () => {
-  const [movies, setMovies] = useState<MovieResult[]>([]);
-  const [query, setQuery] = useState("")
+  // const [movies, setMovies] = useState<MovieResult[]>([]);
+  const [query, setQuery] = useState("");
+
+  const movieSearch = useAsync(MovieService.searchMovies, [query]);
 
   const handleSelect = (value: string) => {
     setQuery(value);
-    // if (search.result?.query === searchText) {
-    //   setMovies(search.result.results);
-    //   return;
-    // }
   };
 
   return (
     <Box>
-        <MovieSearchField onSelect={handleSelect}/>
-      {movies.map((movie) => (
-        <MovieItem {...movie} key={movie.id} />
-      ))}
+      <MovieSearchField onSelect={handleSelect} />
+      {movieSearch.loading && <CircularProgress />}
+      {movieSearch.error && <div>There was an error with moviesearch</div>}
+      {movieSearch.result &&
+        movieSearch.result.map((movie, index) =>
+          index ? (
+            <MovieItem movie={movie} key={movie.id} />
+          ) : (
+            <MovieItem movie={movie} truncateTitle={false} descriptionLines={5} key={movie.id} />
+          )
+        )}
     </Box>
   );
 };
