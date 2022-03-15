@@ -6,8 +6,8 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import { useState } from "react";
 import { useAsync } from "react-async-hook";
-import MovieSearchField from "../components/MovieSearchField";
-import MovieService, { MovieResult } from "../services/MovieService";
+import MovieSearchField, { MovieSelection } from "../components/MovieSearchField";
+import MovieService, { MovieResult, SearchOptions } from "../services/MovieService";
 import { css } from "@emotion/react";
 
 /** Parent must have overflow: hidden */
@@ -37,7 +37,12 @@ interface MovieItemProps {
   truncateTitle?: boolean;
   descriptionLines?: number;
 }
-const MovieItem = ({movie, truncateTitle=true, descriptionLines=2, ...otherProps}: MovieItemProps) => {
+const MovieItem = ({
+  movie,
+  truncateTitle = true,
+  descriptionLines = 2,
+  ...otherProps
+}: MovieItemProps) => {
   return (
     <Card
       sx={{
@@ -90,15 +95,17 @@ const MovieItem = ({movie, truncateTitle=true, descriptionLines=2, ...otherProps
 const SearchPage = () => {
   // const [movies, setMovies] = useState<MovieResult[]>([]);
   const [query, setQuery] = useState("");
+  const [options, setOptions] = useState<SearchOptions>({})
 
-  const movieSearch = useAsync(MovieService.searchMovies, [query]);
+  const movieSearch = useAsync(MovieService.searchMovies, [query, options]);
 
-  const handleSelect = (value: string) => {
-    setQuery(value);
+  const handleSelect = ({ title, id }: MovieSelection) => {
+    setQuery(title);
+    setOptions({...options, id})
   };
 
   return (
-    <Box>
+    <main>
       <MovieSearchField onSelect={handleSelect} />
       {movieSearch.loading && <CircularProgress />}
       {movieSearch.error && <div>There was an error with moviesearch</div>}
@@ -107,10 +114,15 @@ const SearchPage = () => {
           index ? (
             <MovieItem movie={movie} key={movie.id} />
           ) : (
-            <MovieItem movie={movie} truncateTitle={false} descriptionLines={5} key={movie.id} />
+            <MovieItem
+              movie={movie}
+              truncateTitle={false}
+              descriptionLines={5}
+              key={movie.id}
+            />
           )
         )}
-    </Box>
+    </main>
   );
 };
 

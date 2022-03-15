@@ -3,13 +3,15 @@ import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import { grey } from "@mui/material/colors";
 import { jsx } from "@emotion/react";
-import {
-  useAutocompleteMovies,
-} from "../hooks/useAutocompleteMovies";
+import { useAutocompleteMovies } from "../hooks/useAutocompleteMovies";
 import { MovieResult } from "../services/MovieService";
 
+export interface MovieSelection {
+  title: string;
+  id?: number;
+}
 interface MovieSearchFieldProps {
-  onSelect: (value: string) => void;
+  onSelect: (selection: MovieSelection) => void;
 }
 
 const MovieSearchField = (props: MovieSearchFieldProps) => {
@@ -46,7 +48,9 @@ const MovieSearchField = (props: MovieSearchFieldProps) => {
       )}
       // onChange only fires when an option is selected or empty string
       // ignore empty strings, convert value to string
-      onChange={(_, value) => value && onSelect(value.title ?? value)} 
+      onChange={(_, value) =>
+        value && onSelect({ title: value.title ?? value, id: value.id })
+      }
     />
   );
 };
