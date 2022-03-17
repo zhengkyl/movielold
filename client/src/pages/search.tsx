@@ -99,14 +99,14 @@ const SearchPage = () => {
 
   const movieSearch = useAsync(MovieService.searchMovies, [query, options]);
 
-  const handleSelect = ({ title, id }: MovieSelection) => {
+  const onSelect = ({ title, id }: MovieSelection) => {
     setQuery(title);
     setOptions({...options, id})
   };
 
   return (
     <main>
-      <MovieSearchField onSelect={handleSelect} />
+      <MovieSearchField onSelect={onSelect} />
       {movieSearch.loading && <CircularProgress />}
       {movieSearch.error && <div>There was an error with moviesearch</div>}
       {movieSearch.result &&
