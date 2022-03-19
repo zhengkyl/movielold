@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material";
+import TextField from "@mui/material/TextField";
 import { InputFieldProps } from "./OmniInput";
 
 const TextInputField = ({ inputKey, formProps }: InputFieldProps) => {

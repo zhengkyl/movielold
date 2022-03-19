@@ -11,9 +11,8 @@ import {
 // import * as MuiIcons from "@mui/icons-material";
 import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { CssBaseline } from "@mui/material";
+import { CssBaseline, List } from "@mui/material";
 import OmniInput from "../components/form/OmniInput";
-
 
 interface FormInputBase {
   title: string; // convertable into unique camelCase object key
@@ -84,7 +83,11 @@ const BuildPage = () => {
           <form onSubmit={methods.handleSubmit(onSubmit)}>
             <Droppable droppableId="form">
               {(provided, snapshot) => (
-                <ul ref={provided.innerRef} {...provided.droppableProps}>
+                <List
+                  sx={{"& > *": { mb: 2 } }}
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                >
                   {formInputs.map((input, index) => (
                     <Draggable
                       key={input.type}
@@ -106,7 +109,7 @@ const BuildPage = () => {
                     </Draggable>
                   ))}
                   {provided.placeholder}
-                </ul>
+                </List>
               )}
             </Droppable>
           </form>

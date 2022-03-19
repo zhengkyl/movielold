@@ -1,13 +1,16 @@
 import OmniInput, { InputFieldProps } from "./OmniInput";
 import TextInputField from "./TextInputField";
+import RatingInputField from "./RatingInputField";
 
 import NumbersIcon from "@mui/icons-material/Numbers";
+import StarIcon from "@mui/icons-material/Star";
 import TextFieldsIcon from "@mui/icons-material/TextFields";
 import CheckboxIcon from "@mui/icons-material/CheckBox";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 
 export enum InputFieldType {
   Text = "Text",
+  Rating = "Rating",
   Number = "Number",
   Checkbox = "Checkbox",
   RadioGroup = "RadioGroup",
@@ -19,6 +22,11 @@ export const InputFieldTypes = {
     title: "Text",
     icon: TextFieldsIcon,
     component: TextInputField,
+  },
+  [InputFieldType.Rating]: {
+    title: "Rating",
+    icon: StarIcon,
+    component: RatingInputField,
   },
   [InputFieldType.Number]: {
     title: "Number",
