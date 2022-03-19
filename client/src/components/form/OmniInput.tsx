@@ -1,23 +1,35 @@
 import {
   Card,
-  CardActions,
   CardContent,
-  Divider,
   IconButton,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  TextField,
   Typography,
+  TextField,
+  MenuItem,
+  Divider,
+  CardActions,
 } from "@mui/material";
+
+import React, {
+  ChangeEventHandler,
+  FocusEventHandler,
+  ReactChild,
+  useCallback,
+  useRef,
+  useState,
+} from "react";
+
+import { useFormContext, UseFormReturn } from "react-hook-form";
+
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import CheckIcon from "@mui/icons-material/Check";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
+import {
+  OmniInputField,
+  InputFieldType,
+  InputFieldTypes,
+} from "./OmniInputField";
 
-import React, { FocusEventHandler } from "react"; // needed for fragments
-import { ChangeEvent, ChangeEventHandler, useCallback, useState } from "react";
-import { useFormContext } from "react-hook-form";
 interface FormSchema {
   type: "object";
   required?: string[];
@@ -35,25 +47,60 @@ interface TextInputSchema extends FormInputSchema {
   type: "Text";
 }
 
-interface InputProps {
+interface BaseInputProps {
+  /** Form field id prefix that is unique between each `<Input/>`
+   * Each `<Input/>` might have several form inputs
+   * ```
+   * `${inputKey}-label` // Used in BaseInput
+   * `${inputKey}-content` // Example usage in <XXXXInput/>
+   * ```
+   */
   inputKey: string | number;
+}
+
+interface OmniInputProps extends BaseInputProps {
   dragHandleProps: any;
+  /** Callback that does all logic to unmount the `<Input/>` */
   onDelete: () => void;
 }
-const TextInput = ({ inputKey, onDelete, dragHandleProps }: InputProps) => {
-  const [inputType, setInputType] = useState("Text");
+export interface InputFieldProps extends BaseInputProps {
+  editing: boolean;
+  formProps: Pick<
+    UseFormReturn,
+    | "register"
+    | "unregister"
+    | "getValues"
+    | "getFieldState"
+    | "formState"
+    | "watch"
+  >;
+}
+
+const OmniInput = ({ inputKey, onDelete, dragHandleProps }: OmniInputProps) => {
+  const [inputType, setInputType] = useState<InputFieldType>(
+    InputFieldType.Text
+  );
 
   const [editing, setEditing] = useState(false);
-
+  
   // need to subscribe to formState to use getFieldState
   const { register, unregister, getValues, getFieldState, formState, watch } =
     useFormContext();
+
+  const formProps = {
+    register,
+    unregister,
+    getValues,
+    getFieldState,
+    formState,
+    watch,
+  };
 
   const watchLabel = watch(`${inputKey}-label`);
 
   const onChangeInputType: ChangeEventHandler<HTMLInputElement> = useCallback(
     (e) => {
-      setInputType(e.target.value);
+      setInputType(e.target.value); // TODO fix type
     },
     []
   );
@@ -61,13 +108,17 @@ const TextInput = ({ inputKey, onDelete, dragHandleProps }: InputProps) => {
   const onEdit = useCallback(() => setEditing(true), []);
 
   const onBlur: FocusEventHandler<HTMLDivElement> = (event) => {
-    // Lost focus to child
+    const modalRoot = document.querySelector(".MuiModal-root");
+    // Lost focus to child or modalRoot b/c select popup is in a portal
     if (
-      !event.currentTarget ||
-      event.currentTarget.contains(event.relatedTarget)
+      !event.relatedTarget || // deselect select popup has undefined relatedTarget
+      event.currentTarget.contains(event.relatedTarget) ||
+      (modalRoot && modalRoot.contains(event.relatedTarget))
     ) {
       return;
     }
+
+    // Else exit edit mode by saving
     onSave();
   };
 
@@ -132,18 +183,20 @@ const TextInput = ({ inputKey, onDelete, dragHandleProps }: InputProps) => {
             value={inputType}
             onChange={onChangeInputType}
           >
-            <MenuItem value="Text">Text</MenuItem>
-            <MenuItem value="Color">Color</MenuItem>
-            <MenuItem value="Number">Number</MenuItem>
+            {/* TODO Not actually sure why value.icon works, look into? */}
+            {Object.entries(InputFieldTypes).map(([key, value]) => (
+              <MenuItem value={key} key={key}>
+                <value.icon />
+                {value.title}
+              </MenuItem>
+            ))}
           </TextField>
         )}
-
-        <TextField
-          sx={{ gridColumn: "1 / 3", justifySelf: "start" }}
-          placeholder="Interesting text"
-          multiline
-          fullWidth
-          disabled={editing}
+        <OmniInputField
+          type={inputType}
+          inputKey={inputKey}
+          editing={editing}
+          formProps={formProps}
         />
       </CardContent>
       <Divider orientation="vertical" flexItem />
@@ -179,4 +232,4 @@ const TextInput = ({ inputKey, onDelete, dragHandleProps }: InputProps) => {
   );
 };
 
-export default TextInput;
+export default OmniInput;

@@ -9,21 +9,12 @@ import {
 // Allows choosing icon by text name dynamically
 // Explodes bundle size, but ok for SSR?
 // import * as MuiIcons from "@mui/icons-material";
-import NumbersIcon from "@mui/icons-material/Numbers";
-import TextFieldsIcon from "@mui/icons-material/TextFields";
-import CheckboxIcon from "@mui/icons-material/CheckBox";
-import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import { useState } from "react";
-import TextInput from "../components/form/TextInput";
 import { FormProvider, useForm } from "react-hook-form";
 import { CssBaseline } from "@mui/material";
-// temp for testing
-const INPUT_TYPES = [
-  { title: "Text", icon: <TextFieldsIcon /> },
-  { title: "Number", icon: <NumbersIcon /> },
-  { title: "Checkbox", icon: <CheckboxIcon /> },
-  { title: "Multiple choice", icon: <RadioButtonCheckedIcon /> },
-];
+import OmniInput from "../components/form/OmniInput";
+
+
 interface FormInputBase {
   title: string; // convertable into unique camelCase object key
   type: "Text" | "Number" | "Checkbox" | "Multiple choice";
@@ -105,7 +96,7 @@ const BuildPage = () => {
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                         >
-                          <TextInput
+                          <OmniInput
                             inputKey={input.type}
                             dragHandleProps={provided.dragHandleProps}
                             onDelete={handleDelete(index)}
