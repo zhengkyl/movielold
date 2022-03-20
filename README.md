@@ -9,6 +9,11 @@
 - ???
 - [ ] Watch more movies
 
+### Progress
+Search demo             |  Early version custom form
+:-------------------------:|:-------------------------:
+![Movie search](../assets/search.gif) | ![Customizable review](../assets/review.gif)
+
 ### Stack
 - Gatsby (React) frontend
 - Express
