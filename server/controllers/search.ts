@@ -22,7 +22,7 @@ interface SearchResponse {
 
 export const getMovies: RequestHandler = async (req, res) => {
   const validationErrors = validationResult(req);
-  if (!validationErrors.isEmpty) {
+  if (!validationErrors.isEmpty()) {
     return res
       .status(400)
       .json({ message: "Bad search input", errors: validationErrors.array() });

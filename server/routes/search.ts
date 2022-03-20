@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.get(
   "/",
-  query("query").exists().isString(),
+  query("query").exists().notEmpty(),
   query("page").optional().isInt(),
   getMovies
 );

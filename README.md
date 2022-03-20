@@ -6,12 +6,12 @@
 - [ ] Load a review template or add and edit the input fields as desired
 - [x] Fill out the review at the same time
 - [ ] Get reviews via API so you can show it on your website
-- ???
+- [ ] ???
 - [ ] Watch more movies
 
 ### Progress
-Search demo             |  Early version custom form
-:-------------------------:|:-------------------------:
+Search demo                           |  Early version custom form
+:------------------------------------:|:-------------------------------------------:
 ![Movie search](../assets/search.gif) | ![Customizable review](../assets/review.gif)
 
 ### Stack
