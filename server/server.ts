@@ -1,24 +1,21 @@
 import mongoose from "mongoose";
 import express from "express";
 import cors from "cors"
+import path from "path"
 
-import authRoutes from "./routes/auth";
-import reviewRoutes from "./routes/review";
-import searchRoutes from "./routes/search"
 import config from "./config/config"
+import apiRoutes from "./routes/routes"
 
 const app = express();
 
 // Initialize Middleware
-app.use(cors())
 app.use(express.json()); // allow json data
 app.use(express.urlencoded({ extended: true })); // allow url encoded data
 
-app.use("/api/auth", authRoutes);
-app.use("/api/review", reviewRoutes);
-app.use("/api/search", searchRoutes);
+app.use(express.static(path.resolve(__dirname, '../client/build')))
 
-console.log(config)
+app.use(cors()) // TODO figure this out
+app.use("/api/v1", apiRoutes)
 
 mongoose
   .connect(config.db.uri)

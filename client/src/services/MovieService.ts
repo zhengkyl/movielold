@@ -25,7 +25,7 @@ const searchMovies = async (
   const { page = 1, limit = 5, id } = options;
 
   const response = await fetch(
-    `http://localhost:5000/api/search?query=${query}&limit=${limit}&page=${page}`,
+    `http://localhost:5000/api/v1/search?query=${query}&limit=${limit}&page=${page}`,
     {
       signal: abortSignal,
     }

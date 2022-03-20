@@ -5,6 +5,8 @@ import { grey } from "@mui/material/colors";
 import { jsx } from "@emotion/react";
 import { useAutocompleteMovies } from "../hooks/useAutocompleteMovies";
 import { MovieResult } from "../services/MovieService";
+import CircularProgress from "@mui/material/CircularProgress";
+import React from "react";
 
 export interface MovieSelection {
   title: string;
@@ -17,7 +19,6 @@ interface MovieSearchFieldProps {
 const MovieSearchField = (props: MovieSearchFieldProps) => {
   const { searchText, setSearchText, search } = useAutocompleteMovies();
   const { onSelect, ...otherProps } = props;
-
   return (
     <Autocomplete
       {...otherProps}
@@ -43,14 +44,29 @@ const MovieSearchField = (props: MovieSearchFieldProps) => {
       onInputChange={(_, newInputValue) => {
         setSearchText(newInputValue);
       }}
+      loading={search.loading}
       renderInput={(params) => (
-        <TextField {...params} label="Search for movies..." />
+        <TextField
+          {...params}
+          label="Search for movies..."
+          InputProps={{
+            ...params.InputProps,
+            endAdornment: (
+              <>
+                {search.loading ? (
+                  <CircularProgress color="inherit" size={20} />
+                ) : null}
+                {params.InputProps.endAdornment}
+              </>
+            ),
+          }}
+        />
       )}
       // onChange only fires when an option is selected or empty string
       // ignore empty strings, convert value to string
-      onChange={(_, value) =>
-        value && onSelect({ title: value.title ?? value, id: value.id })
-      }
+      onChange={(_, value) => {
+        value && onSelect({ title: value.title ?? value, id: value.id });
+      }}
     />
   );
 };

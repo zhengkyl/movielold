@@ -55,8 +55,8 @@ interface BaseInputProps {
   /** Form field id prefix that is unique between each `<Input/>`
    * Each `<Input/>` might have several form inputs
    * ```
-   * `${inputKey}-label` // Used in BaseInput
-   * `${inputKey}-content` // Example usage in <XXXXInput/>
+   * `${inputKey}.label` // Used in BaseInput
+   * `${inputKey}.content` // Example usage in <XXXXInput/>
    * ```
    */
   inputKey: string | number;
@@ -100,7 +100,7 @@ const OmniInput = ({ inputKey, onDelete, dragHandleProps }: OmniInputProps) => {
     watch,
   };
 
-  const watchLabel = watch(`${inputKey}-label`);
+  const watchLabel = watch(`${inputKey}.label`);
 
   const onChangeInputType: ChangeEventHandler<HTMLInputElement> = useCallback(
     (e) => {
@@ -123,13 +123,14 @@ const OmniInput = ({ inputKey, onDelete, dragHandleProps }: OmniInputProps) => {
       return;
     }
 
+    console.log("onblue", event.relatedTarget);
     // Else exit edit mode by saving
     onSave();
   };
 
   const onSave = () => {
     // const titleValue = getValues(`${inputKey}-label`)
-    const test = getFieldState(`${inputKey}-label`);
+    const test = getFieldState(`${inputKey}.label`);
     console.log(test);
     const values = getValues();
     console.log(values);
@@ -138,7 +139,7 @@ const OmniInput = ({ inputKey, onDelete, dragHandleProps }: OmniInputProps) => {
 
   // TODO add confirmation?
   const onTryDelete = useCallback(() => {
-    unregister(`${inputKey}-label`);
+    unregister(`${inputKey}.label`);
     onDelete();
   }, [unregister, onDelete, inputKey]);
 
@@ -157,12 +158,10 @@ const OmniInput = ({ inputKey, onDelete, dragHandleProps }: OmniInputProps) => {
           },
         },
       }}
+      onBlur={onBlur}
+      tabIndex={0}
     >
-      <Card
-        sx={{ display: "flex", justifyContent: "space-between" }}
-        onBlur={onBlur}
-        tabIndex={0}
-      >
+      <Card sx={{ display: "flex", justifyContent: "space-between" }}>
         <CardContent
           sx={{
             flex: 1,
@@ -184,7 +183,7 @@ const OmniInput = ({ inputKey, onDelete, dragHandleProps }: OmniInputProps) => {
                 placeholder="Label"
                 required
                 autoFocus
-                {...register(`${inputKey}-label`, {
+                {...register(`${inputKey}.label`, {
                   minLength: 1,
                   maxLength: 64,
                 })}
@@ -243,29 +242,15 @@ const OmniInput = ({ inputKey, onDelete, dragHandleProps }: OmniInputProps) => {
           {...dragHandleProps}
           sx={{
             bgcolor: "primary.light",
+            p: 0,
           }}
           disableSpacing
         >
-          {/* {editing ? (
-          <>
-            <IconButton aria-label="save" onClick={onSave} size="small">
-              <CheckIcon />
-            </IconButton>
-            <IconButton aria-label="delete" onClick={onTryDelete} size="small">
-              <DeleteIcon />
-            </IconButton>
-          </>
-        ) : (
-          <IconButton aria-label="edit" onClick={onEdit} size="small">
-            <EditIcon />
-          </IconButton>
-        )} */}
           <DragIndicatorIcon fontSize="small" />
         </CardActions>
       </Card>
 
       <Box
-        // Covers entire area for nice emphasis on edit tools on hover
         sx={{
           position: "absolute",
           right: 0,
@@ -275,9 +260,6 @@ const OmniInput = ({ inputKey, onDelete, dragHandleProps }: OmniInputProps) => {
           flexDirection: "column",
           justifyContent: "space-between",
           py: 1,
-          // opacity: 0.25,
-          // ":hover": { opacity: 1 },
-          // transition: "opacity 250ms ease",
         }}
       >
         {editing ? (

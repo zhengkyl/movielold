@@ -6,8 +6,13 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import { useState } from "react";
 import { useAsync } from "react-async-hook";
-import MovieSearchField, { MovieSelection } from "../components/MovieSearchField";
-import MovieService, { MovieResult, SearchOptions } from "../services/MovieService";
+import MovieSearchField, {
+  MovieSelection,
+} from "../components/MovieSearchField";
+import MovieService, {
+  MovieResult,
+  SearchOptions,
+} from "../services/MovieService";
 import { css } from "@emotion/react";
 
 /** Parent must have overflow: hidden */
@@ -95,33 +100,39 @@ const MovieItem = ({
 const SearchPage = () => {
   // const [movies, setMovies] = useState<MovieResult[]>([]);
   const [query, setQuery] = useState("");
-  const [options, setOptions] = useState<SearchOptions>({})
+  const [options, setOptions] = useState<SearchOptions>({});
 
   const movieSearch = useAsync(MovieService.searchMovies, [query, options]);
 
   const onSelect = ({ title, id }: MovieSelection) => {
     setQuery(title);
-    setOptions({...options, id})
+    setOptions({ ...options, id });
   };
 
   return (
     <main>
-      <MovieSearchField onSelect={onSelect} />
-      {movieSearch.loading && <CircularProgress />}
-      {movieSearch.error && <div>There was an error with moviesearch</div>}
-      {movieSearch.result &&
-        movieSearch.result.map((movie, index) =>
-          index ? (
-            <MovieItem movie={movie} key={movie.id} />
-          ) : (
-            <MovieItem
-              movie={movie}
-              truncateTitle={false}
-              descriptionLines={5}
-              key={movie.id}
-            />
-          )
+      <Box sx={{ p: 2 }}>
+        <MovieSearchField onSelect={onSelect} />
+        {movieSearch.loading && (
+          <CircularProgress sx={{ display: "block", mx: "auto", my: 4 }} />
         )}
+        {movieSearch.error && <div>There was an error with moviesearch</div>}
+        <Box component="ul">
+          {movieSearch.result &&
+            movieSearch.result.map((movie, index) =>
+              index ? (
+                <MovieItem movie={movie} key={movie.id} />
+              ) : (
+                <MovieItem
+                  movie={movie}
+                  truncateTitle={false}
+                  descriptionLines={5}
+                  key={movie.id}
+                />
+              )
+            )}
+        </Box>
+      </Box>
     </main>
   );
 };

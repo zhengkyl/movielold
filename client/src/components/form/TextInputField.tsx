@@ -11,7 +11,7 @@ const TextInputField = ({ inputKey, formProps }: InputFieldProps) => {
       placeholder="Interesting text"
       multiline
       fullWidth
-      {...register(`${inputKey}-content`, { shouldUnregister: true })}
+      {...register(`${inputKey}.content`, { shouldUnregister: true })}
       // disabled={editing}
     />
   );
