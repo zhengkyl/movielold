@@ -33,6 +33,7 @@ import {
 } from "./OmniInputField";
 
 import Box from "@mui/material/Box";
+import grey from "@mui/material/colors/grey";
 
 interface FormSchema {
   type: "object";
@@ -148,12 +149,12 @@ const OmniInput = ({ inputKey, onDelete, dragHandleProps }: OmniInputProps) => {
       sx={{
         px: 4,
         position: "relative",
-        "& > :last-child": {
+        "& .movielo-hoverable": {
           opacity: 0.25,
           transition: "opacity 300ms ease",
         },
         ":hover": {
-          "& > :last-child": {
+          "& .movielo-hoverable": {
             opacity: 1,
           },
         },
@@ -161,10 +162,32 @@ const OmniInput = ({ inputKey, onDelete, dragHandleProps }: OmniInputProps) => {
       onBlur={onBlur}
       tabIndex={0}
     >
-      <Card sx={{ display: "flex", justifyContent: "space-between" }}>
+      <Card
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+        }}
+        variant="outlined"
+      >
+        <CardActions
+          {...dragHandleProps}
+          sx={{
+            p: 0,
+            pt: 0.5,
+            width: "100%",
+          }}
+          disableSpacing
+          className="movielo-hoverable"
+        >
+          <DragIndicatorIcon
+            fontSize="small"
+            htmlColor={grey[500]}
+            sx={{ rotate: "90deg", m: "auto" }}
+          />
+        </CardActions>
         <CardContent
           sx={{
-            flex: 1,
+            pt: 0,
           }}
         >
           <Box
@@ -173,7 +196,6 @@ const OmniInput = ({ inputKey, onDelete, dragHandleProps }: OmniInputProps) => {
               justifyContent: "space-between",
               flexWrap: "wrap",
               gap: 2,
-              mb: 2,
             }}
           >
             {editing ? (
@@ -237,17 +259,6 @@ const OmniInput = ({ inputKey, onDelete, dragHandleProps }: OmniInputProps) => {
             formProps={formProps}
           />
         </CardContent>
-        <Divider orientation="vertical" flexItem />
-        <CardActions
-          {...dragHandleProps}
-          sx={{
-            bgcolor: "primary.light",
-            p: 0,
-          }}
-          disableSpacing
-        >
-          <DragIndicatorIcon fontSize="small" />
-        </CardActions>
       </Card>
 
       <Box
@@ -261,6 +272,7 @@ const OmniInput = ({ inputKey, onDelete, dragHandleProps }: OmniInputProps) => {
           justifyContent: "space-between",
           py: 1,
         }}
+        className="movielo-hoverable"
       >
         {editing ? (
           <>
