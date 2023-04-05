@@ -7,6 +7,7 @@ import StarIcon from "@mui/icons-material/Star";
 import TextFieldsIcon from "@mui/icons-material/TextFields";
 import CheckboxIcon from "@mui/icons-material/CheckBox";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
+import SelectInputField from "./SelectInputField";
 
 export enum InputFieldType {
   Text = "Text",
@@ -14,6 +15,7 @@ export enum InputFieldType {
   Number = "Number",
   Checkbox = "Checkbox",
   RadioGroup = "RadioGroup",
+  Select = "Select",
 }
 // TODO
 // look into why icon can be used without capital
@@ -43,6 +45,11 @@ export const InputFieldTypes = {
     icon: RadioButtonCheckedIcon,
     component: TextInputField,
   },
+  [InputFieldType.Select]: {
+    title: "Select",
+    icon: NumbersIcon,
+    component: SelectInputField,
+  },
 };
 
 export const OmniInputField = (
@@ -50,5 +57,5 @@ export const OmniInputField = (
 ) => {
   const { type, ...inputProps } = props;
   const InputField = InputFieldTypes[type].component;
-  return <InputField {...props} />;
+  return <InputField {...inputProps} />;
 };

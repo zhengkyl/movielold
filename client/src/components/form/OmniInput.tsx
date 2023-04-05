@@ -5,18 +5,13 @@ import {
   Typography,
   TextField,
   MenuItem,
-  Divider,
   CardActions,
-  ListItemText,
-  CardHeader,
 } from "@mui/material";
 
 import React, {
   ChangeEventHandler,
   FocusEventHandler,
-  ReactChild,
   useCallback,
-  useRef,
   useState,
 } from "react";
 
@@ -124,7 +119,7 @@ const OmniInput = ({ inputKey, onDelete, dragHandleProps }: OmniInputProps) => {
       return;
     }
 
-    console.log("onblue", event.relatedTarget);
+    // console.log("onblue", event.relatedTarget);
     // Else exit edit mode by saving
     onSave();
   };
@@ -132,9 +127,9 @@ const OmniInput = ({ inputKey, onDelete, dragHandleProps }: OmniInputProps) => {
   const onSave = () => {
     // const titleValue = getValues(`${inputKey}-label`)
     const test = getFieldState(`${inputKey}.label`);
-    console.log(test);
+    // console.log(test);
     const values = getValues();
-    console.log(values);
+    // console.log(values);
     setEditing(false);
   };
 
